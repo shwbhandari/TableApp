@@ -1,5 +1,6 @@
-<?php 
-// header('location:http://localhost/create.php'); 
+<?php
+// Start the session
+session_start();
 ?>
 <?php $this->layout('_layout'); ?>
 
@@ -30,14 +31,7 @@
     <div class="mb-16 w-full lg:grid lg:grid-cols-12 lg:gap-x-5">
         <aside class="py-6 px-2 sm:px-6 lg:py-0 lg:px-0 lg:col-span-3">
             <nav class="space-y-1">
-                <!-- <a href="#user" class="bg-gray-50 text-indigo-700 hover:text-indigo-700 hover:bg-white group rounded-md px-3 py-2 flex items-center text-sm font-medium" aria-current="page">
-                    <svg class="text-indigo-500 group-hover:text-indigo-500 flex-shrink-0 -ml-1 mr-3 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span class="truncate">
-                        User Information
-                    </span>
-                </a> -->
+               
 
                 <a href="#create" class="text-gray-900 hover:text-gray-900 hover:bg-gray-50 group rounded-md px-3 py-2 flex items-center text-sm font-medium">
                     <svg class="text-gray-400 group-hover:text-gray-500 flex-shrink-0 -ml-1 mr-3 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -48,6 +42,16 @@
                     </span>
                 </a>
 
+            
+                
+                <a href="#insert" class="text-gray-900 hover:text-gray-900 hover:bg-gray-50 group rounded-md px-3 py-2 flex items-center text-sm font-medium">
+                    <svg class="text-gray-400 group-hover:text-gray-500 flex-shrink-0 -ml-1 mr-3 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
+                    </svg>
+                    <span class="truncate">
+                        Insert Data into Table
+                    </span>
+                </a>
                 <a href="#display" class="text-gray-900 hover:text-gray-900 hover:bg-gray-50 group rounded-md px-3 py-2 flex items-center text-sm font-medium">
                     <svg class="text-gray-400 group-hover:text-gray-500 flex-shrink-0 -ml-1 mr-3 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
@@ -77,19 +81,19 @@
     $colname=$_POST['colname'];
     $size=$_POST['size'];
  
-  if(! $conn ) 
+ if(! $conn ) 
   {
        die('Could not connect: ' . mysqli_connect_error($conn));
   } 
  if(($type=="char") or ($type=="varchar")){
  $sql ="CREATE TABLE $tname ($colname $type($size))";
-}
-else
-{
+ }
+ else
+  {
     $sql = "CREATE TABLE $tname ("."$colname $type)";
-}
+  }
 
-$mysqli -> select_db("diy");
+  $mysqli -> select_db("diy");
 
  $retval = $mysqli -> query( $sql ); 
  if(! $retval ) 
@@ -98,19 +102,68 @@ $mysqli -> select_db("diy");
  
  } 
  else
- {echo "Table created successfully\n";
+ {
+     echo "Table created successfully\n";
  }
 }
-if(isset($_POST['showTable'])){
-    $tname= $_POST['tname'];
+
+    //for displaying table
+   if(isset($_POST['showTable'])){
+    $_SESSION['selectable']= $_POST['tname'];
     $tables = $this->db->list_tables();
- 
-}
-  mysqli_close($conn); 
-  
-   ?>
+    }
+    else{
+    $_SESSION['selectable']='art';
+    }
+    //for displaying fields to insert data
+    if (isset($_POST["display"])) {
+    $_SESSION['selectable']= $_POST['tname'];
+    }
+    else
+    {
+    $_SESSION['selectable']='art';
+    }
+    //for inserting data data
+    if (isset($_POST["Insert"])) {
+     $_SESSION['inserttable']=$_POST['tname'];
+    }
+
+   //code for inserting data in database
+    if (isset($_POST["insertData"])) {
+        unset($_POST['insertData']);
+        echo $_SESSION['inserttable'];
+        $inserttable =  $_SESSION['inserttable'];
+        $newdata = $_POST;
+        $columns = implode(', ', array_keys($newdata));
+        $values = array_values($newdata);
+        $placeholders = implode(', ', array_fill(0, count($values), '?')); 
+
+        $insert_query = "INSERT INTO $inserttable ($columns) VALUES($placeholders)";
+
+        $insert_stmt = $mysqli->prepare($insert_query);
+
+        if($insert_stmt->execute($values)){
+            echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+            Data inserted successfully into table'.$_SESSION['inserttable'].'
+           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+           </button>
+           </div>';            
+        }else{
+            echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+           Unable to insert data
+           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+           </button>
+           </div>';
+        } 
         
-       
+      
+}   
+ // mysqli_close($conn); 
+  
+?>
+          
             <div id="create">
                 <div class="shadow sm:rounded-md sm:overflow-hidden">
                     <div class="bg-white">
@@ -146,15 +199,121 @@ if(isset($_POST['showTable'])){
                                     <input placeholder="Size" type="text"  name="size" id="size" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                 </div>          
                                 <div class="col-span-6">
-                                    <button class="button" type="submit" name="createTable" class="btn-primary" style="border-radius:5px;padding:2px;background-color:grey"><span><strong>Create</strong></span></button>
-                                </div>             
+                                    <button  type="submit" name="createTable" class="btn btn-secondary"><span><strong>Create</strong></span></button>
+                                 </div>             
                           
                         </div>
                     </div>
                 </div>
             </div>
-
             
+              <!-- Insert Table Section -->
+              <div id="insert">
+                <div class="shadow sm:rounded-md sm:overflow-hidden">
+                    <div class="bg-white">
+                        <div class="px-4 py-5 sm:px-6 bg-gray-100">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900">Insert rows in Tables</h3>
+                        </div>
+                       
+                            <div class="px-4 py-5 sm:px-6 grid grid-cols-6 gap-6">
+                            <form method="post" class="container" id="showform" enctype="multipart/form-data">
+                                <div class="col-span-6">
+                                    <label  class="block text-sm font-medium text-gray-700">Select Table name</label>
+                                    <select name="tname" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3" aria-label="Default select example">
+                                    <?php                                        
+                                        $tableList = array();
+                                        $res = $mysqli->query("SHOW TABLES");
+                                        while($cRow = mysqli_fetch_array($res))
+                                        {
+                                          $tableList[] = $cRow[0];
+                                        }
+                                        foreach ($tableList as $table) {                                                                   
+                                    ?> 
+                                    <option value="<?php echo $table; ?>"><?php echo $table ;?></option> 
+                                    <?php
+                                    }
+                                    ?>
+                                    </select>
+                                </div>
+                            
+                                <div class="col-span-6">
+                                    <button type="submit" name="Insert" class="btn btn-secondary align-center text-center"><span><strong>Submit</strong></span></button>
+                                </div> 
+                                </form>
+                                
+                               <div class="col-span-6">
+                                <?php   
+                                                       
+                                $res = $mysqli->query('SELECT * FROM '.$_SESSION['inserttable']);
+                                $data = $res->fetch_all(MYSQLI_ASSOC);
+                                
+                                echo '
+                                <form method="post" class="insertform" id="insertform" enctype="multipart/form-data">
+                                <div class="col-span-6"> 
+                                <p class="mt-1 text-md text-center font-medium text-gray-700">Enter data for inserting data</p>';
+                                $coltype='text';
+                                foreach ($res->fetch_fields() as $column) {
+                                    echo '<label class="block text-md font-medium text-gray-700">'.htmlspecialchars($column->name).'</label>';
+                                    
+                                    if(htmlspecialchars($column->type)=='253'){
+                                        $coltype='text';
+                                    }
+                                    elseif(htmlspecialchars($column->type)=='7'){
+                                        $coltype='datetime';
+                                    }
+                                    elseif(htmlspecialchars($column->type)=='1'){
+                                        $coltype='checkbox';
+                                    }
+                                    elseif(htmlspecialchars($column->type)=='3'){
+                                        $coltype='number';
+                                    }
+                                    echo  '<input placeholder="Enter  '.$coltype.' only" type="'.$coltype.'"  name="'.htmlspecialchars($column->name).'"  class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">';
+                                }
+                                echo '
+
+                                </div>
+                               <br>
+                                <div class="col-span-6"> 
+                                <button type="submit" name="insertData" class="btn btn-secondary align-center text-center"><span><strong>Insert</strong></span></button>
+                                </div>
+                                </form><hr>
+                                <h3 class="text-lg leading-6 font-medium text-gray-900">Table Data</h3>';                 
+                             
+                                echo ' <table class="table table-striped">';
+                                // Display table header
+                                echo '<thead>';
+                                echo '<tr>';
+                                foreach ($res->fetch_fields() as $column) {
+                                    echo '<th scope="col">'.htmlspecialchars($column->name).'</th>';
+                                }
+                                echo '</tr>';
+                                echo '</thead> <tbody>';
+                                // If there is data then display each row
+                                if ($data) {
+                                    foreach ($data as $row) {
+                                        echo '<tr scope="row">';
+                                        foreach ($row as $cell) {
+                                            echo '<td>'.htmlspecialchars($cell).'</td>';
+                                        }
+                                        echo '</tr>';
+                                    }
+                                } else {
+                                    echo '<tr><td colspan="'.$res->field_count.'">No records in the table!</td></tr>';
+                                }
+                                echo '</tbody></table>';                                                        
+                                                                                                            
+                                ?>
+                                </div>
+                                           
+                            </div>
+                        </div>
+                    </div>
+                </div>
+           
+
+         <!-- end of insert table section  -->
+
+            <!-- Display table section -->
             <div id="display">
                 <div class="shadow sm:rounded-md sm:overflow-hidden">
                     <div class="bg-white">
@@ -162,27 +321,70 @@ if(isset($_POST['showTable'])){
                             <h3 class="text-lg leading-6 font-medium text-gray-900">Display Tables</h3>
                         </div>
                         <form method="post" class="container" id="showform" enctype="multipart/form-data">
-                        <div class="px-4 py-5 sm:px-6 grid grid-cols-6 gap-6">
-                        <div class="col-span-6">
-                                    <label  class="block text-sm font-medium text-gray-700">Table name</label>
+                            <div class="px-4 py-5 sm:px-6 grid grid-cols-6 gap-6">
+                                <div class="col-span-6">
+                                    <label  class="block text-sm font-medium text-gray-700">Select Table name</label>
                                     <select name="tname" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3" aria-label="Default select example">
-                        
-                        </div>
-                                
-                                <div class="col-span-6">
-                                    <label  class="block text-sm font-medium text-gray-700">Column name</label>
-                                    <input placeholder="Table Name" type="text"  name="colname" id="colname" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                </div>
+                                    <?php 
                                         
+                                        $tableList = array();
+                                        $res = $mysqli->query("SHOW TABLES");
+                                        while($cRow = mysqli_fetch_array($res))
+                                        {
+                                          $tableList[] = $cRow[0];
+                                        }
+                                        foreach ($tableList as $table) {                                                                   
+                                    ?> 
+                                    <option value="<?php echo $table; ?>"><?php echo $table ;?></option> 
+                                    <?php
+                                    }
+                                    ?>
+                                    </select>
+                                </div>
+                                    
                                 <div class="col-span-6">
-                                    <button class="button" type="submit" name="submit" class="btn-primary" style="border-radius:5px;padding:2px;background-color:grey"><span><strong>Create</strong></span></button>
-                                </div>             
-                          
+                                    <button  type="submit" name="display" class="btn btn-secondary"><span><strong>Submit</strong></span></button>
+                                </div> 
+                                <div class="col-span-6">
+                                <?php   
+                                                       
+                                $res = $mysqli->query('SELECT * FROM '.$_SESSION['selectable']);
+                                $data = $res->fetch_all(MYSQLI_ASSOC);
+                                
+                                echo ' <table class="table table-striped">';
+                                // Display table header
+                                echo '<thead>';
+                                echo '<tr>';
+                                foreach ($res->fetch_fields() as $column) {
+                                    echo '<th scope="col">'.htmlspecialchars($column->name).'</th>';
+                                }
+                                echo '</tr>';
+                                echo '</thead> <tbody>';
+                                // If there is data then display each row
+                                if ($data) {
+                                    foreach ($data as $row) {
+                                        echo '<tr scope="row">';
+                                        foreach ($row as $cell) {
+                                            echo '<td>'.htmlspecialchars($cell).'</td>';
+                                        }
+                                        echo '</tr>';
+                                    }
+                                } else {
+                                    echo '<tr><td colspan="'.$res->field_count.'">No records in the table!</td></tr>';
+                                }
+                                echo '</tbody></table>';                                                        
+                              
+                                ?>
+                                </div>
+                                           
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
+                </div>
+        
+        
+      
         </div>
 
     </div>
