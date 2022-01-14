@@ -14,7 +14,7 @@ Features-
    
    -view tables 
    
-The project is made over Django as backend, SQLite as the database, and HTML, CSS, JS, Boostrap4, and Javascript as frontend.
+The project is made over PHP as backend, MySQL as the database, and HTML, CSS, JS, Boostrap4, and Javascript as frontend.
 
 A deployed version can be checked here: 
 
