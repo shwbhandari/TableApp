@@ -146,33 +146,37 @@ echo(' <div class="alert alert-warning alert-dismissible fade show" role="alert"
     {
     $_SESSION['selectable']='art';
     }
-    //for inserting data data
+  
     if (isset($_POST["Insert"])) {
-     $_SESSION['inserttable']=$_POST['tname'];
-    }
-
+     $_SESSION['inserttable']=$_POST['itable'];
+     }
+     
+ 
+   
    //code for inserting data in database
     if (isset($_POST["insertData"])) {
         unset($_POST['insertData']);
-        echo $_SESSION['inserttable'];
+       
+       // echo $_SESSION['inserttable'];
         $inserttable =  $_SESSION['inserttable'];
         $newdata = $_POST;
         $columns = implode(', ', array_keys($newdata));
         $values = array_values($newdata);
-        $placeholders = implode(', ', array_fill(0, count($values), '?')); 
-
-        $insert_query = "INSERT INTO $inserttable ($columns) VALUES($placeholders)";
-
-        $insert_stmt = $mysqli->prepare($insert_query);
-
-        if($insert_stmt->execute($values)){
+        
+       
+        $fivalue = "'" . implode( "','", $values) ."'";
+   
+        $sqlQuery = "INSERT INTO $inserttable ($columns) VALUES ($fivalue)";
+        $result = mysqli_query($conn, $sqlQuery);
+        if($result){
             echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
-            Data inserted successfully into table'.$_SESSION['inserttable'].'
+            Data inserted successfully into table '.$_SESSION['inserttable'].'
            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
              <span aria-hidden="true">&times;</span>
            </button>
            </div>';            
-        }else{
+        }
+        else{
             echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
            Unable to insert data
            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -183,7 +187,7 @@ echo(' <div class="alert alert-warning alert-dismissible fade show" role="alert"
         
       
 }   
- // mysqli_close($conn); 
+            // mysqli_close($conn); 
   
 ?>
           
@@ -207,20 +211,20 @@ echo(' <div class="alert alert-warning alert-dismissible fade show" role="alert"
                                 </div>
                         </form>
 
-<?php
- if (isset($_POST["go"]))
-  {
- $fields=$_POST['fields'];
-echo("<form method=\"post\" class=\"container\" id=\"form\" enctype=\"multipart/form-data\">
-                        <div class=\"px-4 py-5 sm:px-6 grid grid-cols-6 gap-6\">
-                                
-                                <div class=\"col-span-6\">
-                                    <label  class=\"block text-sm font-medium text-gray-700\">Table name</label>
-                                    <input placeholder=\"Table Name\" type=\"text\"  name=\"tname\" id=\"tname\" class=\"mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm\">
-                                </div>
-  ");
-  for ($i = 0 ; $i <$fields; $i++) {
-   $var=$i+1;
+                            <?php
+                             if (isset($_POST["go"]))
+                              {
+                             $fields=$_POST['fields'];
+                            echo("<form method=\"post\" class=\"container\" id=\"form\" enctype=\"multipart/form-data\">
+                                                    <div class=\"px-4 py-5 sm:px-6 grid grid-cols-6 gap-6\">
+                                                            
+                                                            <div class=\"col-span-6\">
+                                                                <label  class=\"block text-sm font-medium text-gray-700\">Table name</label>
+                                                                <input placeholder=\"Table Name\" type=\"text\"  name=\"tname\" id=\"tname\" class=\"mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm\">
+                                                            </div>
+                              ");
+                              for ($i = 0 ; $i <$fields; $i++) {
+                               $var=$i+1;
                                 echo("
                                 <div class=\"col-span-6\">
                                     <label  class=\"block text-sm font-medium text-gray-700\">Column name [$var]</label>
@@ -241,16 +245,16 @@ echo("<form method=\"post\" class=\"container\" id=\"form\" enctype=\"multipart/
                                     <label  class=\"block text-sm font-medium text-gray-700\">(enter size for string or email)</label>
                                     <input placeholder=\"Size\" type=\"text\"  name=\"size[$i]\" id=\"size\" class=\"mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm\">
                                 </div>         ");
-  }
+                             }
                                 echo('<div class="col-span-6">
                                     <button class="button" type="submit" name="createTable" class="btn-primary" style="border-radius:5px;padding:2px;background-color:grey"><span><strong>Create</strong></span></button>
                                 </div>             
                           
                             </div>
                             </form>');
- }
+                        }
 
-?>
+                ?>
 
                     </div>
                 </div>
@@ -263,12 +267,12 @@ echo("<form method=\"post\" class=\"container\" id=\"form\" enctype=\"multipart/
                         <div class="px-4 py-5 sm:px-6 bg-gray-100">
                             <h3 class="text-lg leading-6 font-medium text-gray-900">Insert rows in Tables</h3>
                         </div>
-                       
+                           
                             <div class="px-4 py-5 sm:px-6 grid grid-cols-6 gap-6">
-                            <form method="post" class="container" id="showform" enctype="multipart/form-data">
-                                <div class="col-span-6">
+                            <div class="col-span-6">
+                            <form method="post" id="showform" enctype="multipart/form-data">
                                     <label  class="block text-sm font-medium text-gray-700">Select Table name</label>
-                                    <select name="tname" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3" aria-label="Default select example">
+                                    <select name="itable" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3" aria-label="Default select example">
                                     <?php                                        
                                         $tableList = array();
                                         $res = $mysqli->query("SHOW TABLES");
@@ -292,14 +296,14 @@ echo("<form method=\"post\" class=\"container\" id=\"form\" enctype=\"multipart/
                                 
                                <div class="col-span-6">
                                 <?php   
-                                                       
-                                $res = $mysqli->query('SELECT * FROM '.$_SESSION['inserttable']);
+                                 if(isset($_POST['Insert'])){                      
+                                $res = $mysqli->query("SELECT * FROM ".$_SESSION['inserttable']);
                                 $data = $res->fetch_all(MYSQLI_ASSOC);
                                 
                                 echo '
                                 <form method="post" class="insertform" id="insertform" enctype="multipart/form-data">
                                 <div class="col-span-6"> 
-                                <p class="mt-1 text-md text-center font-medium text-gray-700">Enter data for inserting data</p>';
+                                <p class="mt-1 text-md text-center font-medium text-gray-700">Enter data for inserting into '.$_SESSION['inserttable'].'</p>';
                                 $coltype='text';
                                 foreach ($res->fetch_fields() as $column) {
                                     echo '<label class="block text-md font-medium text-gray-700">'.htmlspecialchars($column->name).'</label>';
@@ -350,7 +354,7 @@ echo("<form method=\"post\" class=\"container\" id=\"form\" enctype=\"multipart/
                                     echo '<tr><td colspan="'.$res->field_count.'">No records in the table!</td></tr>';
                                 }
                                 echo '</tbody></table>';                                                        
-                                                                                                            
+                                 }                                                                        
                                 ?>
                                 </div>
                                            
@@ -394,6 +398,8 @@ echo("<form method=\"post\" class=\"container\" id=\"form\" enctype=\"multipart/
                                 <div class="col-span-6">
                                     <button  type="submit" name="display" class="btn btn-secondary"><span><strong>Submit</strong></span></button>
                                 </div> 
+
+                            </form>
                                 <div class="col-span-6">
                                 <?php   
                                                        
