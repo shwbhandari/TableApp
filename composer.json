@@ -34,6 +34,7 @@
       "composer install --no-dev",
       "php -S 127.0.0.1:3000 public/index.php"
     ],
+    
     "docker": [
       "Composer\\Config::disableProcessTimeout",
       "@pre-run-app",
@@ -47,7 +48,11 @@
     ],
     "pre-run-app": [
       "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
-    ]
+    ],
+     "post-install-cmd": [
+     "php artisan clear-compiled",
+     "chmod -R 777 public/"
+ ]
   },
   "license": "MIT"
 }
