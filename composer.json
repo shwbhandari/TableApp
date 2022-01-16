@@ -32,7 +32,7 @@
       "Composer\\Config::disableProcessTimeout",
       "@pre-run-app",
       "composer install --no-dev",
-      "php -S 127.0.0.1:3000 public/index.php"
+      "php -S https://ignitetables.herokuapp.com/ public/index.php"
     ],
     
     "docker": [
