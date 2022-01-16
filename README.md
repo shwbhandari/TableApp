@@ -60,7 +60,14 @@ Database : MySQL
 # How to run app on local machine
 
 prerequisite 
-PHP 7.4+ and Composer installed and accessible from your shell
+PHP 7.4+ ,Composer, Xampp control panel installed and accessible from your shell
+Download Table App folder in htdocs folder of xampp and add app/diy.sql databasefile in phpmyadmin 
+
+Open command prompt and type
+```
+cd C:/xampp/htdocs/TableApp/app
+```
+
 Next, use the following command to install the necessary dependencies and start the app:
 ```
 composer run app
