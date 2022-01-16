@@ -2,6 +2,7 @@
 // Start the session
 session_start();
 ?>
+
 <?php $this->layout('_layout'); ?>
 
 <?php $this->start('hero') ?>
@@ -52,11 +53,11 @@ session_start();
                     </span>
                 </a>
                 <a href="#display" class="text-gray-900 hover:text-gray-900 hover:bg-gray-50 group rounded-md px-3 py-2 flex items-center text-sm font-medium">
-                    <svg class="text-gray-400 group-hover:text-gray-500 flex-shrink-0 -ml-1 mr-3 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
-                    </svg>
+                <svg class="text-gray-400 group-hover:text-gray-500 flex-shrink-0 -ml-1 mr-3 h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
                     <span class="truncate">
-                        Display Tables
+                        Display Tables and Filter Data
                     </span>
                 </a>
             </nav>
@@ -65,71 +66,71 @@ session_start();
         <div class="space-y-6 sm:px-6 lg:px-0 lg:col-span-9">
          
         
-<?php
-  $server = "localhost"; 
-  $username = "root";
-  $password = "";
-  $database="diy";
-  $conn = mysqli_connect($server, $username, $password ,$database); 
-  $mysqli = new mysqli($server, $username, $password ,$database);
-
- if (isset($_POST["createTable"])) 
- { 
-    $tname= $_POST['tname'];
-    $type=$_POST['type'];
-    $colname=$_POST['colname'];
-    $size=$_POST['size'];
- 
- if(! $conn ) 
-  {
-       die('Could not connect: ' . mysqli_connect_error($conn));
-  } 
-
-$num_columns = count($colname);
-
-  $sql = "create table $tname (";
-  for ($i = 0; $i < $num_columns; $i++) 
-  {
-    $sql .= "$colname[$i] $type[$i]";
-    if(($type[$i] =="char") or ($type[$i] =="varchar"))
-    {
-      if($size[$i] !="" ){ $sql.= "($size[$i])"; }
+    <?php
+      $server = "localhost"; 
+      $username = "root";
+      $password = "";
+      $database="diy";
+      $conn = mysqli_connect($server, $username, $password ,$database); 
+      $mysqli = new mysqli($server, $username, $password ,$database);
+                
+     if (isset($_POST["createTable"])) 
+     { 
+        $tname= $_POST['tname'];
+        $type=$_POST['type'];
+        $colname=$_POST['colname'];
+        $size=$_POST['size'];
+    
+     if(! $conn ) 
+      {
+           die('Could not connect: ' . mysqli_connect_error($conn));
+      } 
+    
+    $num_columns = count($colname);
+    
+      $sql = "create table $tname (";
+      for ($i = 0; $i < $num_columns; $i++) 
+      {
+        $sql .= "$colname[$i] $type[$i]";
+        if(($type[$i] =="char") or ($type[$i] =="varchar"))
+        {
+          if($size[$i] !="" ){ $sql.= "($size[$i])"; }
+        }
+        if(($i+1) != $num_columns){ $sql.=","; }
+      }
+      $sql .= ")";
+    
+    
+      $mysqli -> select_db("diy");
+    
+     $retval = $mysqli -> query( $sql ); 
+     if(! $retval ) 
+    
+     {
+    echo(' <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      <strong>');
+      echo("Cant create " . $mysqli -> error);
+      echo('
+      </strong> 
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+        ');
+    
+     } 
+     else
+     {echo('
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      <strong>Table created successfully</strong> 
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+        ');
+     }
     }
-    if(($i+1) != $num_columns){ $sql.=","; }
-  }
-  $sql .= ")";
-
-
-  $mysqli -> select_db("diy");
-
- $retval = $mysqli -> query( $sql ); 
- if(! $retval ) 
- 
- {
-echo(' <div class="alert alert-warning alert-dismissible fade show" role="alert">
-  <strong>');
-  echo("Cant create " . $mysqli -> error);
-  echo('
-  </strong> 
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-    ');
- 
- } 
- else
- {echo('
-    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-  <strong>Table created successfully</strong> 
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-    ');
- }
-}
-
+    
     //for displaying table
    if(isset($_POST['showTable'])){
     $_SESSION['selectable']= $_POST['tname'];
@@ -157,7 +158,7 @@ echo(' <div class="alert alert-warning alert-dismissible fade show" role="alert"
     if (isset($_POST["insertData"])) {
         unset($_POST['insertData']);
        
-       // echo $_SESSION['inserttable'];
+      
         $inserttable =  $_SESSION['inserttable'];
         $newdata = $_POST;
         $columns = implode(', ', array_keys($newdata));
@@ -186,11 +187,11 @@ echo(' <div class="alert alert-warning alert-dismissible fade show" role="alert"
         } 
         
       
-}   
+        }   
             // mysqli_close($conn); 
   
-?>
-          
+        ?>
+          <!-- create table section -->
             <div id="create">
                 <div class="shadow sm:rounded-md sm:overflow-hidden">
                     <div class="bg-white">
@@ -206,7 +207,7 @@ echo(' <div class="alert alert-warning alert-dismissible fade show" role="alert"
                                     <input placeholder="enter number" type="text"  name="fields" id="fields" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                 </div>
                                 <div class="col-span-6">
-                                    <button class="button" type="go" name="go" class="btn-primary" style="border-radius:5px;padding:2px;background-color:grey"><span><strong>GO</strong></span></button>
+                                    <button  type="go" name="go" class="btn btn-secondary"><span><strong>GO</strong></span></button>
                                 </div>  
                                 </div>
                         </form>
@@ -218,10 +219,10 @@ echo(' <div class="alert alert-warning alert-dismissible fade show" role="alert"
                             echo("<form method=\"post\" class=\"container\" id=\"form\" enctype=\"multipart/form-data\">
                                                     <div class=\"px-4 py-5 sm:px-6 grid grid-cols-6 gap-6\">
                                                             
-                                                            <div class=\"col-span-6\">
-                                                                <label  class=\"block text-sm font-medium text-gray-700\">Table name</label>
-                                                                <input placeholder=\"Table Name\" type=\"text\"  name=\"tname\" id=\"tname\" class=\"mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm\">
-                                                            </div>
+                                                        <div class=\"col-span-6\">
+                                                            <label  class=\"block text-sm font-medium text-gray-700\">Table name</label>
+                                                            <input placeholder=\"Table Name\" type=\"text\"  name=\"tname\" id=\"tname\" class=\"mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm\">
+                                                        </div>
                               ");
                               for ($i = 0 ; $i <$fields; $i++) {
                                $var=$i+1;
@@ -254,7 +255,7 @@ echo(' <div class="alert alert-warning alert-dismissible fade show" role="alert"
                             </form>');
                         }
 
-                ?>
+                        ?>
 
                     </div>
                 </div>
@@ -293,7 +294,7 @@ echo(' <div class="alert alert-warning alert-dismissible fade show" role="alert"
                                     <button type="submit" name="Insert" class="btn btn-secondary align-center text-center"><span><strong>Submit</strong></span></button>
                                 </div> 
                                 </form>
-                                
+                                <!-- section diplay after selecting insert table -->
                                <div class="col-span-6">
                                 <?php   
                                  if(isset($_POST['Insert'])){                      
@@ -309,18 +310,33 @@ echo(' <div class="alert alert-warning alert-dismissible fade show" role="alert"
                                     echo '<label class="block text-md font-medium text-gray-700">'.htmlspecialchars($column->name).'</label>';
                                     
                                     if(htmlspecialchars($column->type)=='253'){
+                                        if($column->name=='email'||$column->name=='Email'){
+                                            $coltype='email';
+                                        }
+                                        else{
                                         $coltype='text';
+                                        }
                                     }
                                     elseif(htmlspecialchars($column->type)=='7'){
-                                        $coltype='datetime';
+                                        $coltype='date';
                                     }
                                     elseif(htmlspecialchars($column->type)=='1'){
-                                        $coltype='checkbox';
+                                        $coltype='radio';
                                     }
                                     elseif(htmlspecialchars($column->type)=='3'){
                                         $coltype='number';
                                     }
+                                    
+                                    if($coltype=='radio'){
+                                        echo '<input type="radio"  name='.htmlspecialchars($column->name).' value="True">
+                                        <label for="html">True</label><br>
+                                        <input type="radio"  name='.htmlspecialchars($column->name).' value="False">
+                                        <label for="css">False</label><br>';
+                                    }
+
+                                    else{
                                     echo  '<input placeholder="Enter  '.$coltype.' only" type="'.$coltype.'"  name="'.htmlspecialchars($column->name).'"  class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">';
+                                    }
                                 }
                                 echo '
 
@@ -400,16 +416,24 @@ echo(' <div class="alert alert-warning alert-dismissible fade show" role="alert"
                                 </div> 
 
                             </form>
+                            <!-- display table after submit -->
+                            <?php
+                            if(isset($_POST['display'])){
+                            ?>
+                       
                                 <div class="col-span-6">
+                               
+                                <table class="table table-striped table-bordered " id="mydatatable" width="100%">
+                                 <!-- Display table header -->
+                                <thead>
+                                <tr>
                                 <?php   
                                                        
                                 $res = $mysqli->query('SELECT * FROM '.$_SESSION['selectable']);
                                 $data = $res->fetch_all(MYSQLI_ASSOC);
                                 
-                                echo ' <table class="table table-striped">';
-                                // Display table header
-                                echo '<thead>';
-                                echo '<tr>';
+                              
+                                
                                 foreach ($res->fetch_fields() as $column) {
                                     echo '<th scope="col">'.htmlspecialchars($column->name).'</th>';
                                 }
@@ -427,22 +451,25 @@ echo(' <div class="alert alert-warning alert-dismissible fade show" role="alert"
                                 } else {
                                     echo '<tr><td colspan="'.$res->field_count.'">No records in the table!</td></tr>';
                                 }
-                                echo '</tbody></table>';                                                        
+                                                                                      
                               
                                 ?>
-                                </div>
-                                           
+                                </tbody>
+                                </table>
+                                
+                                <?php } ?>           
                             </div>
                         </div>
                     </div>
                 </div>
                 </div>
         
-        
+        <!-- end of display section -->
       
         </div>
 
     </div>
-    
+ 
+
 <?php $this->stop() ?>
 
