@@ -57,7 +57,7 @@ Backend : PHP
 
 Database : MySQL
 
-How to run app on local machine
+# How to run app on local machine
 
 prerequisite 
 PHP 7.4+ and Composer installed and accessible from your shell
