@@ -6,7 +6,10 @@ This is an online dynamic table creation platform made by Manish Kumar Kushwaha 
 # Demo Video 
 
 
-https://user-images.githubusercontent.com/66429289/149630426-815e857c-adcc-4ec1-90fa-b53b7b37398a.mp4
+
+
+
+https://user-images.githubusercontent.com/66429289/150170392-86e8c438-3675-406a-9d3e-a240e6e97993.mp4
 
 
 
