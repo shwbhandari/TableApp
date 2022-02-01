@@ -48,9 +48,9 @@ Manish Kumar Kushwaha [https://github.com/unite3]
 
 Shweta Jain [https://github.com/shwbhandari]
 
-Frontend + JavaScript Functionality : Manish Kumar Kushwaha
+Create Table and Deployment: Manish Kumar Kushwaha
 
-Backend + Database : Shweta Jain
+Authentication, Insert Table, Display Table : Shweta Jain
 
 # Tech Stack Used
 
